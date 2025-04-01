@@ -46,6 +46,7 @@ class PreProcessing:
     
     # Convert ratings into binary implicit feedback
     def binary_convert(self):
+        # Rating is 1 if it was orignally 3 or greater, 0 if it was less than 3
         self.ratings['rating'] = self.ratings['rating'].apply(lambda x: 1 if x >= 3 else 0)
         
         return self.ratings 
@@ -72,6 +73,8 @@ class PreProcessing:
         
         # Randomly sample a fraction of the negative samples
         self.negative_samples_df = pd.DataFrame(self.negative_samples, columns=['user_id','movie_id'])
+        
+        # Set their ratings to 0
         self.negative_samples_df['rating'] = 0
         
         # Combine with the original ratings
