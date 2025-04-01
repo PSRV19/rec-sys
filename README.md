@@ -7,8 +7,13 @@ This repository contains an implementation of the Neural Collaborative Filtering
 
 ## Repository Structure
 
-- **ncf.py**: Main Python source file that includes data preprocessing, model definition, training, and evaluation.
-- **ratings.dat**: (Not included) Download the MovieLens 1M dataset from the [MovieLens Official Website](https://grouplens.org/datasets/movielens/1m/) and place the `ratings.dat` file in the same directory.
+- **main.py**: Main Python source file to run the code.
+- **data_preprocessing.py**: Python file for preprocessing the ratings data from the MovieLens dataset.
+- **ncf_model.py**: Python file that contains the neural network architecture with GMF and MLP.
+- **train.py**: Python file that trains the NCF model.
+- **evaluate.py**: Python file that evaluates various metrics of the model after training.
+- **config.py**: Python file that contains configuration settings for the model.
+- **ml-1m/**: Directory containing the MovieLens 1M dataset.
 - **README.md**: This file.
 
 ## Requirements
@@ -27,18 +32,12 @@ pip install torch pandas numpy scikit-learn
 
 ## Getting Started
 
-1. **Download the MovieLens 1M Dataset**
-
-    Visit the [MovieLens Official Website](https://grouplens.org/datasets/movielens/1m/) and download the dataset. Extract the file and locate `ratings.dat`.
-
-    Place ratings.dat in the same directory as ncf.py.
-
-2. **Run the Code**
+1. **Run the Code**
 
     Open a terminal in the project directory and execute the following command:
 
     ``` bash
-    python ncf.py
+    python main.py
     ```
 
     The script will:
@@ -47,7 +46,7 @@ pip install torch pandas numpy scikit-learn
     - Generate negative samples.
     - Split the data into training (70%), validation (15%), and testing (15%) sets.
     - Build and train the NCF model.
-    - Evaluate the model using Recall@10 and NDCG@10 metrics, then print the results.
+    - Evaluate the model using Recall@10 and NDCG@10 metrics, then print the results and the training and validation losses.
 
 ## Code Overview
 
@@ -73,7 +72,7 @@ pip install torch pandas numpy scikit-learn
 
 - **Hyperparameters:**
 
-  - You can adjust hyperparameters (e.g., embedding dimension, learning rate, number of MLP layers) directly in the `ncf.py` file.
+  - You can adjust hyperparameters (e.g., embedding dimension, learning rate, number of MLP layers) directly in the `config.yaml` file. These changes will affect the model's behavior during training.
 
 - **Negative Sampling:**
 
@@ -83,7 +82,7 @@ pip install torch pandas numpy scikit-learn
 
 - **Dataset Not Found:**
 
-    Ensure that the `ratings.dat` file is in the same directory as `ncf.py` and that its path is correctly set in the code.
+    Ensure that the `ratings.dat` file is in the ml-1m/ directory and that its path is correctly set in the code.
 
 - **Dependency Issues:**
 

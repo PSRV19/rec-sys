@@ -28,6 +28,10 @@
 
   - The evaluation computes Recall@10 and NDCG@10 by ranking candidate items for each user.
 
+  - The evaluation evaluates and plots the model's performance for different top-k cutoffs.
+
+  - The evaluation plots the training and loss curves to visualize training progress.
+
   - The approach ensures that only items unseen in training are considered for ranking.
 
 This self-contained source code, with comprehensive inline comments, should help you understand and implement the NCF model.
