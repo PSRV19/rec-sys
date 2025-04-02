@@ -44,8 +44,8 @@ def load_and_preprocess_data(ratings_file, num_negatives=4):
     user2id = {user: idx for idx, user in enumerate(unique_users)}
     item2id = {item: idx for idx, item in enumerate(unique_items)}
 
-    data['userId'] = data['userId'].map(user2id)
-    data['movieId'] = data['movieId'].map(item2id)
+    data['userId'] = data['userId'].map(lambda x: user2id[x])
+    data['movieId'] = data['movieId'].map(lambda x: item2id[x])
 
     num_users = len(user2id)
     num_items = len(item2id)
@@ -54,27 +54,32 @@ def load_and_preprocess_data(ratings_file, num_negatives=4):
     positive_samples = data[data['label'] == 1][['userId', 'movieId']]
     
     # Convert user-item interactions into a dictionary for fast lookup
-    user_item_dict = data.groupby('userId')['movieId'].apply(set).to_dict()
+    user_item_dict = {user: set(items) for user, items in data.groupby('userId')['movieId']}
 
-    # Vectorized Negative Sampling
-    users, items, labels = [], [], []
+    # Precompute negative candidates per user
+    negative_candidates = {}
+    all_items = np.arange(num_items)  # Faster item lookup
 
-    all_items = np.array(list(range(num_items)))  # Faster item lookup
+    for user in range(num_users):
+        negative_candidates[user] = np.setdiff1d(all_items, list(user_item_dict.get(user, set())), assume_unique=True)
 
-    for user, pos_item in zip(positive_samples['userId'], positive_samples['movieId']):
-        users.append(user)
-        items.append(pos_item)
-        labels.append(1)  # Positive sample
-        
-        # Get negative samples efficiently
-        neg_samples = np.random.choice(all_items, num_negatives * 2, replace=False)  # Sample more to ensure validity
-        neg_samples = [neg for neg in neg_samples if neg not in user_item_dict[user]][:num_negatives]
+    # Generate negative samples in a vectorized manner
+    users = np.repeat(positive_samples['userId'].values, num_negatives + 1)
+    items = np.empty_like(users)
+    labels = np.empty_like(users)
 
-        users.extend([user] * len(neg_samples))
-        items.extend(neg_samples)
-        labels.extend([0] * len(neg_samples))  # Negative samples
+    # Assign positive samples
+    items[::num_negatives + 1] = positive_samples['movieId'].values
+    labels[::num_negatives + 1] = 1
 
-    # Create a DataFrame from arrays
+    # Assign negative samples
+    for i, user in enumerate(positive_samples['userId'].values):
+        neg_samples = np.random.choice(negative_candidates[user], num_negatives, replace=False)
+        start_idx = i * (num_negatives + 1) + 1
+        items[start_idx:start_idx + num_negatives] = neg_samples
+        labels[start_idx:start_idx + num_negatives] = 0
+
+    # Create DataFrame from NumPy arrays
     samples_df = pd.DataFrame({'userId': users, 'movieId': items, 'label': labels})
 
     # Stratified splitting

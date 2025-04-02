@@ -9,8 +9,8 @@ activation_function: "relu"  # Options: "relu", "leaky_relu", "sigmoid", "tanh"
 num_epochs: 20
 batch_size: 256
 learning_rate: 0.001
-weight_decay: 0.00001
-early_stopping_patience: 3
+weight_decay: 0.01
+early_stopping_patience: 10
 
 # Dataset settings
 num_negatives: 4  # Number of negative samples per positive interaction

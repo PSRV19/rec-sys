@@ -61,10 +61,7 @@ def main():
         num_users, 
         num_items, 
         embedding_dim=config['embedding_dim'],
-        mlp_layers=config['mlp_layers'],
-        use_gmf=config['use_gmf'],
-        use_mlp=config['use_mlp'],
-        activation_function=config['activation_function']
+        mlp_layers=config['mlp_layers']
     )
     
     print("Training the model (with early stopping)...")
@@ -75,8 +72,8 @@ def main():
         val_loader, 
         num_epochs=config['num_epochs'], 
         learning_rate=config['learning_rate'],
-        weight_decay=config['weight_decay'],
-        patience=config['early_stopping_patience']
+        patience=config['early_stopping_patience'],
+        weight_decay=config['weight_decay']
     )
     
     # Plot learning curves
