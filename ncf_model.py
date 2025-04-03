@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F  # For normalization
 
 class NCF(nn.Module):
     """
     Neural Collaborative Filtering (NCF) model combining GMF and MLP branches.
     """
-    def __init__(self, num_users, num_items, embedding_dim=32, mlp_layers=[64, 32, 16, 8]):
+    def __init__(self, num_users, num_items, embedding_dim=32, mlp_layers=[64, 32, 16, 8], dropout=0.2):
         """
         Initializes the NCF model.
 
@@ -14,6 +15,7 @@ class NCF(nn.Module):
             num_items (int): Total number of items.
             embedding_dim (int): Dimensionality for user/item embeddings.
             mlp_layers (list): List containing sizes of MLP hidden layers.
+            dropout (float): Dropout rate for regularization.
         """
         super(NCF, self).__init__()
         
@@ -25,12 +27,20 @@ class NCF(nn.Module):
         self.user_embedding_mlp = nn.Embedding(num_users, embedding_dim)
         self.item_embedding_mlp = nn.Embedding(num_items, embedding_dim)
         
+        # Initialize embeddings with Xavier initialization
+        nn.init.xavier_uniform_(self.user_embedding_gmf.weight)
+        nn.init.xavier_uniform_(self.item_embedding_gmf.weight)
+        nn.init.xavier_uniform_(self.user_embedding_mlp.weight)
+        nn.init.xavier_uniform_(self.item_embedding_mlp.weight)
+        
         # Build MLP layers dynamically based on provided mlp_layers list.
         mlp_input_dim = embedding_dim * 2  # since we concatenate user and item embeddings
         mlp_modules = []
         for layer_size in mlp_layers:
             mlp_modules.append(nn.Linear(mlp_input_dim, layer_size))
+            mlp_modules.append(nn.BatchNorm1d(layer_size))  # Add batch normalization
             mlp_modules.append(nn.ReLU())
+            mlp_modules.append(nn.Dropout(dropout))  # Add dropout for regularization
             mlp_input_dim = layer_size
         self.mlp = nn.Sequential(*mlp_modules)
         
@@ -51,8 +61,8 @@ class NCF(nn.Module):
             Tensor: Predicted probability (after sigmoid activation).
         """
         # GMF branch: element-wise multiplication of user and item embeddings.
-        user_gmf = self.user_embedding_gmf(user_indices)
-        item_gmf = self.item_embedding_gmf(item_indices)
+        user_gmf = F.normalize(self.user_embedding_gmf(user_indices), p=2, dim=-1)  # L2 normalization
+        item_gmf = F.normalize(self.item_embedding_gmf(item_indices), p=2, dim=-1)  # L2 normalization
         gmf_output = user_gmf * item_gmf
         
         # MLP branch: concatenation of user and item embeddings, then passing through MLP layers.
