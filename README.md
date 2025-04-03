@@ -22,12 +22,15 @@ This repository contains an implementation of the Neural Collaborative Filtering
 - PyTorch (version 1.6+ recommended)
 - pandas
 - numpy
+- matplotlib
 - scikit-learn
+- PyYAML
+- tqdm
 
 You can install the required packages using pip:
 
 ```bash
-pip install torch pandas numpy scikit-learn
+pip install torch pandas numpy matplotlib scikit-learn PyYAML tqdm
 ```
 
 ## Getting Started
