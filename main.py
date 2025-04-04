@@ -81,7 +81,8 @@ def main():
     # Plot learning curves
     plot_learning_curves(
         train_losses, 
-        val_losses, 
+        val_losses,
+        config,
         save_path=os.path.join(output_dir, "learning_curves.png")
     )
     
@@ -108,7 +109,8 @@ def main():
     plot_metrics_at_k(
         k_values, 
         recall_at_k, 
-        ndcg_at_k, 
+        ndcg_at_k,
+        config,
         save_path=os.path.join(output_dir, "metrics_at_k.png")
     )
     
