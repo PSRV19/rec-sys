@@ -4,16 +4,17 @@ mlp_layers: [64, 32, 16, 8]  # MLP architecture
 use_gmf: true  # Set false to disable GMF branch
 use_mlp: true  # Set false to disable MLP branch
 activation_function: "relu"  # Options: "relu", "leaky_relu", "sigmoid", "tanh"
+dropout: 0.2
 
 # Training settings
 num_epochs: 20
 batch_size: 256
-learning_rate: 0.001
-weight_decay: 0.01
-early_stopping_patience: 10
+learning_rate: 0.0005
+weight_decay: 0.00001
+early_stopping_patience: 100
 
 # Dataset settings
-num_negatives: 4  # Number of negative samples per positive interaction
+num_negatives: 8  # Number of negative samples per positive interaction
 train_split: 0.7
 val_split: 0.15
 test_split: 0.15

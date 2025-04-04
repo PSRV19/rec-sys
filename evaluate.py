@@ -59,7 +59,7 @@ def evaluate_model(model, test_df, train_user_items, all_items, top_k=10):
     avg_ndcg = np.mean(ndcg_scores)
     return avg_recall, avg_ndcg
 
-def plot_learning_curves(train_losses, val_losses, save_path=None):
+def plot_learning_curves(train_losses, val_losses, config, save_path=None):
     """
     Plot the training and validation loss curves.
     
@@ -74,7 +74,10 @@ def plot_learning_curves(train_losses, val_losses, save_path=None):
     plt.plot(epochs, train_losses, 'b-', label='Training Loss')
     plt.plot(epochs, val_losses, 'r-', label='Validation Loss')
     
-    plt.title('Training and Validation Loss')
+    plt.title('Training and Validation Loss for the NCF Model with the following configuration:\n' +
+              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']}, " +
+              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']}, " +
+              f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
@@ -87,7 +90,7 @@ def plot_learning_curves(train_losses, val_losses, save_path=None):
     
     plt.close()
 
-def plot_metrics_comparison(model_configs, metrics, metric_name, save_path=None):
+def plot_metrics_comparison(model_configs, metrics, metric_name, config, save_path=None):
     """
     Plot comparison of metrics across different model configurations.
     
@@ -102,7 +105,10 @@ def plot_metrics_comparison(model_configs, metrics, metric_name, save_path=None)
     # Create bar chart
     plt.bar(model_configs, metrics)
     
-    plt.title(f'{metric_name} Comparison Across Model Configurations')
+    plt.title(f'{metric_name} Comparison Across Model Configurations for the following configuration\n' +
+              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']}, " +
+              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']}, " +
+              f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
     plt.xlabel('Model Configuration')
     plt.ylabel(metric_name)
     plt.xticks(rotation=45)

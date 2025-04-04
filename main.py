@@ -3,6 +3,7 @@ import torch
 import yaml
 from torch.utils.data import DataLoader
 import os
+import datetime
 
 # Import from our modules
 from data_preprocessing import load_and_preprocess_data, MovieLensDataset
@@ -61,7 +62,8 @@ def main():
         num_users, 
         num_items, 
         embedding_dim=config['embedding_dim'],
-        mlp_layers=config['mlp_layers']
+        mlp_layers=config['mlp_layers'],
+        dropout=config['dropout']
     )
     
     print("Training the model (with early stopping)...")
@@ -79,8 +81,9 @@ def main():
     # Plot learning curves
     plot_learning_curves(
         train_losses, 
-        val_losses, 
-        save_path=os.path.join(output_dir, "learning_curves.png")
+        val_losses,
+        config, 
+        save_path=os.path.join(output_dir, f"learning_curves_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.png")
     )
     
     # Prepare dictionary of user -> items interacted with in the training set (for evaluation)
@@ -106,8 +109,9 @@ def main():
     plot_metrics_at_k(
         k_values, 
         recall_at_k, 
-        ndcg_at_k, 
-        save_path=os.path.join(output_dir, "metrics_at_k.png")
+        ndcg_at_k,
+        config, 
+        save_path=os.path.join(output_dir, f"metrics_at_k_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.png")
     )
     
     # Print metrics at different k values
