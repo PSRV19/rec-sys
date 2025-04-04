@@ -8,7 +8,7 @@ dropout: 0.2  # Set dropout to 0.2 for all layers
 num_epochs: 20  # Run for 20 epochs
 batch_size: 128  # Set batch size to 128
 learning_rate: 0.0005
-early_stopping_patience: 1000  # Disable early stopping
+early_stopping_patience: 3  # Disable early stopping
 step_size: 5
 gamma: 0.25
 weight_decay: 1e-5  # Add weight decay to the optimizer
