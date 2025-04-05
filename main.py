@@ -3,6 +3,7 @@ import torch
 import yaml
 from torch.utils.data import DataLoader
 import os
+import datetime
 
 # Import from our modules
 from data_preprocessing import load_and_preprocess_data, MovieLensDataset
@@ -21,10 +22,34 @@ def load_config(config_path):
         config = yaml.safe_load(file)
     return config
 
+config = {
+    'embedding_dim': 32,  # Keep the embedding dimension as is
+    'mlp_layers': [64, 32, 16, 8],  # Keep the MLP architecture as is
+    'dropout': 0.2,  # Set dropout to 0.2 for all layers
+
+    # Training settings
+    'num_epochs': 20,  # Run for 20 epochs
+    'batch_size': 128,  
+    'learning_rate': 0.0005,
+    'early_stopping_patience': 3,
+    'step_size': 5,
+    'gamma': 0.25,
+    'weight_decay': 1e-5,  # Add weight decay to the optimizer
+
+    # Dataset settings
+    'num_negatives': 8,  # Keep the number of negative samples as is
+    'train_split': 0.7,
+    'val_split': 0.15,
+    'test_split': 0.15,
+
+    # Other
+    'random_seed': 42
+}
+
 def main():
-    # Load configuration
-    print("Loading configuration from config.yaml file...")
-    config = load_config('config.yaml')
+    # # Load configuration
+    # print("Loading configuration from config.yaml file...")
+    # config = load_config('config.yaml')
     
     # Set random seed for reproducibility
     print("Setting random seed for reproducibility...")
@@ -54,7 +79,8 @@ def main():
     
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    
+
+
     print("Initializing the NCF model...")
     # Initialize the NCF model
     model = NCF(
@@ -83,7 +109,7 @@ def main():
         train_losses, 
         val_losses,
         config,
-        save_path=os.path.join(output_dir, "learning_curves.png")
+        save_path=os.path.join(output_dir, f"learning_curves_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.png")
     )
     
     # Prepare dictionary of user -> items interacted with in the training set (for evaluation)
@@ -111,13 +137,51 @@ def main():
         recall_at_k, 
         ndcg_at_k,
         config,
-        save_path=os.path.join(output_dir, "metrics_at_k.png")
+        save_path=os.path.join(output_dir, f"metrics_at_k_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.png")
     )
     
     # Print metrics at different k values
     print("\nMetrics at different k values:")
     for k in k_values:
         print(f"k={k}: Recall@{k}={recall_at_k[k]:.4f}, NDCG@{k}={ndcg_at_k[k]:.4f}")
+    print("\nEvaluation complete.")
+    print("=" * 50 + "\n")
 
 if __name__ == '__main__':
+    # run default configuration
+    main()
+
+    # Uncomment the following lines to run with different configurations
+    # Configuration 1
+    config['embedding_dim'] = 64
+    main()
+
+    # Configuration 2
+    config['embedding_dim'] = 64
+    config['batch_size'] = 256
+    main()
+
+    # Configuration 3
+    config['embedding_dim'] = 32
+    config['batch_size'] = 256
+    main()
+
+    # Configuration 4
+    config['embedding_dim'] = 32
+    config['mlp_layers'] = [128, 64, 32, 16]
+    config['dropout'] = 0.2
+    config['batch_size'] = 128
+    main()
+
+    # Configuration 5
+    config['embedding_dim'] = 64
+    main()
+
+    # Configuration 6
+    config['embedding_dim'] = 32
+    config['batch_size'] = 256
+    main()
+
+    # Configuration 7
+    config['embedding_dim'] = 64
     main()
