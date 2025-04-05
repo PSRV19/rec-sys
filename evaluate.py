@@ -68,15 +68,15 @@ def plot_learning_curves(train_losses, val_losses, config, save_path=None):
         val_losses (list): List of validation losses per epoch.
         save_path (str, optional): Path to save the plot. If None, the plot is displayed.
     """
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 8))
     epochs = range(1, len(train_losses) + 1)
     
     plt.plot(epochs, train_losses, 'b-', label='Training Loss')
     plt.plot(epochs, val_losses, 'r-', label='Validation Loss')
     
     plt.title('Training and Validation Loss for the following configuration\n' +
-              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']}, " +
-              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']}, " +
+              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']},\n" +
+              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']},\n" +
               f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
@@ -100,14 +100,14 @@ def plot_metrics_comparison(model_configs, metrics, metric_name, config, save_pa
         metric_name (str): Name of the metric being compared (e.g., 'Recall@10', 'NDCG@10').
         save_path (str, optional): Path to save the plot. If None, the plot is displayed.
     """
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 8))
     
     # Create bar chart
     plt.bar(model_configs, metrics)
     
     plt.title(f'{metric_name} Comparison Across Model Configurations for the following configuration\n' +
-              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']}, " +
-              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']}, " +
+              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']},\n" +
+              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']},\n" +
               f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
     plt.xlabel('Model Configuration')
     plt.ylabel(metric_name)
@@ -146,7 +146,7 @@ def evaluate_at_different_k(model, test_df, train_user_items, all_items, k_value
     
     return recall_at_k, ndcg_at_k
 
-def plot_metrics_at_k(k_values, recall_at_k, ndcg_at_k, save_path=None):
+def plot_metrics_at_k(k_values, recall_at_k, ndcg_at_k, config, save_path=None):
     """
     Plot Recall@k and NDCG@k for different values of k.
     
@@ -156,8 +156,11 @@ def plot_metrics_at_k(k_values, recall_at_k, ndcg_at_k, save_path=None):
         ndcg_at_k (dict): Dictionary mapping k values to NDCG@k.
         save_path (str, optional): Path to save the plot. If None, the plot is displayed.
     """
-    plt.figure(figsize=(12, 6))
-    
+    plt.figure(figsize=(12, 8))
+    plt.title('Plot Recall@k and NDCG@k for different values of k for the following configuration\n' +
+              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']},\n" +
+              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']},\n" +
+              f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
     # Create subplot for Recall@k
     plt.subplot(1, 2, 1)
     plt.plot(k_values, [recall_at_k[k] for k in k_values], 'bo-')
