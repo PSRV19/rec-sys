@@ -77,7 +77,7 @@ pip install torch pandas numpy matplotlib scikit-learn tqdm
 
 - **Negative Sampling:**
 
-    The number of negative samples per positive example is controlled by the `num_negatives` parameter in the `load_and_preprocess_data` function.
+    The number of negative samples per positive example is controlled by the `num_negatives` parameter in the `config` in the `main.py` file.
 
 ## Troubleshooting
 
