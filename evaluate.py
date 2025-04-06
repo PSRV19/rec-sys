@@ -75,9 +75,8 @@ def plot_learning_curves(train_losses, val_losses, config, save_path=None):
     plt.plot(epochs, val_losses, 'r-', label='Validation Loss')
     
     plt.title('Training and Validation Loss for the following configuration\n' +
-              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']},\n" +
-              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']},\n" +
-              f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
+              f"Embedding Dim:{config['embedding_dim']}, MLP Layers:{config['mlp_layers']}, Dropout:{config['dropout']},\n" +
+              f"Batch Size:{config['batch_size']}, Num Negatives:{config['num_negatives']}")
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
@@ -106,9 +105,8 @@ def plot_metrics_comparison(model_configs, metrics, metric_name, config, save_pa
     plt.bar(model_configs, metrics)
     
     plt.title(f'{metric_name} Comparison Across Model Configurations for the following configuration\n' +
-              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']},\n" +
-              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']},\n" +
-              f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
+              f"Embedding Dim:{config['embedding_dim']}, MLP Layers:{config['mlp_layers']}, Dropout:{config['dropout']},\n" +
+              f"Batch Size:{config['batch_size']}, Num Negatives:{config['num_negatives']}")
     plt.xlabel('Model Configuration')
     plt.ylabel(metric_name)
     plt.xticks(rotation=45)
@@ -158,9 +156,8 @@ def plot_metrics_at_k(k_values, recall_at_k, ndcg_at_k, config, save_path=None):
     """
     plt.figure(figsize=(12, 8))
     plt.title('Plot Recall@k and NDCG@k for different values of k for the following configuration\n' +
-              f"Embedding Dim: {config['embedding_dim']}, MLP Layers: {config['mlp_layers']}, Dropout: {config['dropout']},\n" +
-              f"Learning Rate: {config['learning_rate']}, Weight Decay: {config['weight_decay']},\n" +
-              f"Batch Size: {config['batch_size']}, Num Negatives: {config['num_negatives']}")
+              f"Embedding Dim:{config['embedding_dim']}, MLP Layers:{config['mlp_layers']}, Dropout:{config['dropout']},\n" +
+              f"Batch Size:{config['batch_size']}, Num Negatives:{config['num_negatives']}")
     # Create subplot for Recall@k
     plt.subplot(1, 2, 1)
     plt.plot(k_values, [recall_at_k[k] for k in k_values], 'bo-')

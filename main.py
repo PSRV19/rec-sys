@@ -4,6 +4,7 @@ import yaml
 from torch.utils.data import DataLoader
 import os
 import datetime
+import csv
 
 # Import from our modules
 from data_preprocessing import load_and_preprocess_data, MovieLensDataset
@@ -47,9 +48,6 @@ config = {
 }
 
 def main():
-    # # Load configuration
-    # print("Loading configuration from config.yaml file...")
-    # config = load_config('config.yaml')
     
     # Set random seed for reproducibility
     print("Setting random seed for reproducibility...")
@@ -111,6 +109,10 @@ def main():
         config,
         save_path=os.path.join(output_dir, f"learning_curves_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.png")
     )
+
+    # Get final training and validation loss
+    final_train_loss = train_losses[-1]
+    final_val_loss = val_losses[-1]
     
     # Prepare dictionary of user -> items interacted with in the training set (for evaluation)
     train_user_items = train_df.groupby('userId')['movieId'].apply(set).to_dict()
@@ -120,6 +122,28 @@ def main():
     avg_recall, avg_ndcg = evaluate_model(trained_model, test_df, train_user_items, all_items, top_k=10)
     print(f"Test Recall@10: {avg_recall:.4f}")
     print(f"Test NDCG@10: {avg_ndcg:.4f}")
+
+    # Save metrics to a file
+    results_file = os.path.join(output_dir, f"results_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.csv")
+    file_exists = os.path.isfile(results_file)
+    
+    with open(results_file, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        # Write header if the file is new
+        if not file_exists:
+            writer.writerow([
+                "embedding_dim", "mlp_layers", "dropout", "batch_size", 
+                "num_epochs", "learning_rate", "final_train_loss", 
+                "final_val_loss", "recall@10", "ndcg@10"
+            ])
+        # Write metrics and configuration
+        writer.writerow([
+            config['embedding_dim'], config['mlp_layers'], config['dropout'], config['batch_size'], 
+            config['num_epochs'], config['learning_rate'], final_train_loss, 
+            final_val_loss, avg_recall, avg_ndcg
+        ])
+    
+    print("Metrics saved to results.csv")
     
     # Evaluate at different k values
     k_values = [5, 10, 15, 20, 50]
@@ -185,3 +209,17 @@ if __name__ == '__main__':
     # Configuration 7
     config['embedding_dim'] = 64
     main()
+
+    # Configuration 8
+    config['num_negatives'] = 4
+    config['embedding_dim'] = 32
+    config['mlp_layers'] = [64, 32, 16, 8]
+    config['batch_size'] = 128
+    main()
+
+    # Configuration 9
+    config['num_negatives'] = 10
+    main()
+
+    
+    
