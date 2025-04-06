@@ -17,12 +17,6 @@ from evaluate import (
     plot_metrics_at_k
 )
 
-def load_config(config_path):
-    """Load configuration from YAML file"""
-    with open(config_path, 'r') as file:
-        config = yaml.safe_load(file)
-    return config
-
 config = {
     'embedding_dim': 32,  # Keep the embedding dimension as is
     'mlp_layers': [64, 32, 16, 8],  # Keep the MLP architecture as is
@@ -73,7 +67,6 @@ def main():
     batch_size = config['batch_size']
     train_dataset = MovieLensDataset(train_df)
     val_dataset = MovieLensDataset(val_df)
-    test_dataset = MovieLensDataset(test_df)  # Although test_dataset is not used in evaluation here.
     
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
@@ -122,28 +115,6 @@ def main():
     avg_recall, avg_ndcg = evaluate_model(trained_model, test_df, train_user_items, all_items, top_k=10)
     print(f"Test Recall@10: {avg_recall:.4f}")
     print(f"Test NDCG@10: {avg_ndcg:.4f}")
-
-    # Save metrics to a file
-    results_file = os.path.join(output_dir, f"results_{datetime.datetime.now().strftime("%d_%m_%Y__%H_%M")}.csv")
-    file_exists = os.path.isfile(results_file)
-    
-    with open(results_file, mode='a', newline='') as file:
-        writer = csv.writer(file)
-        # Write header if the file is new
-        if not file_exists:
-            writer.writerow([
-                "embedding_dim", "mlp_layers", "dropout", "batch_size", 
-                "num_epochs", "learning_rate", "final_train_loss", 
-                "final_val_loss", "recall@10", "ndcg@10"
-            ])
-        # Write metrics and configuration
-        writer.writerow([
-            config['embedding_dim'], config['mlp_layers'], config['dropout'], config['batch_size'], 
-            config['num_epochs'], config['learning_rate'], final_train_loss, 
-            final_val_loss, avg_recall, avg_ndcg
-        ])
-    
-    print("Metrics saved to results.csv")
     
     # Evaluate at different k values
     k_values = [5, 10, 15, 20, 50]

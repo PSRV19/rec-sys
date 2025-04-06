@@ -38,7 +38,7 @@ def load_and_preprocess_data(ratings_file, num_negatives=4):
     # Convert explicit ratings to binary implicit feedback
     data['label'] = (data['rating'] >= 4).astype(int)
 
-    # Map userId and movieId to contiguous indices
+    # Map userId and movieId to neighbouring indices
     unique_users = data['userId'].unique()
     unique_items = data['movieId'].unique()
     user2id = {user: idx for idx, user in enumerate(unique_users)}
@@ -56,7 +56,7 @@ def load_and_preprocess_data(ratings_file, num_negatives=4):
     # Convert user-item interactions into a dictionary for fast lookup
     user_item_dict = data.groupby('userId')['movieId'].apply(set).to_dict()
 
-    # Vectorized Negative Sampling
+    # Vectorized Negative Sampling since it is quicker
     users, items, labels = [], [], []
 
     all_items = np.array(list(range(num_items)))  # Faster item lookup
@@ -64,9 +64,9 @@ def load_and_preprocess_data(ratings_file, num_negatives=4):
     for user, pos_item in zip(positive_samples['userId'], positive_samples['movieId']):
         users.append(user)
         items.append(pos_item)
-        labels.append(1)  # Positive sample
+        labels.append(1)  
         
-        # Get negative samples efficiently
+        # Get negative samples efficiently by finding the opposite of what the user has rated
         neg_samples = np.random.choice(all_items, num_negatives * 2, replace=False)  # Sample more to ensure validity
         neg_samples = [neg for neg in neg_samples if neg not in user_item_dict[user]][:num_negatives]
 

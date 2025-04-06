@@ -40,6 +40,8 @@ def train_model(model, train_loader, val_loader, num_epochs=20, learning_rate=0.
         train_progress_bar = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Train]", leave=False, ncols=100)
         for users, items, labels in train_progress_bar:
             optimizer.zero_grad()
+            
+            # Get predictions and calculate training loss
             predictions = model(users, items).squeeze()
             loss = loss_function(predictions, labels)
             loss.backward()
@@ -56,6 +58,7 @@ def train_model(model, train_loader, val_loader, num_epochs=20, learning_rate=0.
         val_progress_bar = tqdm(val_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Val]", leave=False, ncols=100)
         with torch.no_grad():
             for users, items, labels in val_progress_bar:
+                # Get predictions and calculate validation loss
                 predictions = model(users, items).squeeze()
                 loss = loss_function(predictions, labels)
                 val_loss += loss.item()
