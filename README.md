@@ -12,7 +12,6 @@ This repository contains an implementation of the Neural Collaborative Filtering
 - **ncf_model.py**: Python file that contains the neural network architecture with GMF and MLP.
 - **train.py**: Python file that trains the NCF model.
 - **evaluate.py**: Python file that evaluates various metrics of the model after training.
-- **config.yaml**: YAML file that contains configuration settings for the model.
 - **ml-1m/**: Directory containing the MovieLens 1M dataset.
 - **README.md**: This file.
 
@@ -24,13 +23,12 @@ This repository contains an implementation of the Neural Collaborative Filtering
 - numpy
 - matplotlib
 - scikit-learn
-- PyYAML
 - tqdm
 
 You can install the required packages using pip:
 
 ```bash
-pip install torch pandas numpy matplotlib scikit-learn PyYAML tqdm
+pip install torch pandas numpy matplotlib scikit-learn tqdm
 ```
 
 ## Getting Started
@@ -75,7 +73,7 @@ pip install torch pandas numpy matplotlib scikit-learn PyYAML tqdm
 
 - **Hyperparameters:**
 
-  - You can adjust hyperparameters (e.g., embedding dimension, learning rate, number of MLP layers) directly in the `config.yaml` file. These changes will affect the model's behavior during training.
+  - You can adjust hyperparameters (e.g., embedding dimension, learning rate, number of MLP layers) directly in the `config` in the `main.py` file. These changes will affect the model's behavior during training.
 
 - **Negative Sampling:**
 
