@@ -1,0 +1,23 @@
+# Model settings
+embedding_dim: 16  # Keep the embedding dimension as is
+# mlp_layers: [256, 128, 64, 32, 16]  # Keep the MLP architecture as is
+mlp_layers: [64, 32, 16, 8]  # Keep the MLP architecture as is
+dropout: 0.2  # Set dropout to 0.2 for all layers
+
+# Training settings
+num_epochs: 20  # Run for 20 epochs
+batch_size: 128  # Set batch size to 128
+learning_rate: 0.0005
+early_stopping_patience: 3  # Disable early stopping
+step_size: 5
+gamma: 0.25
+weight_decay: 1e-5  # Add weight decay to the optimizer
+
+# Dataset settings
+num_negatives: 8  # Keep the number of negative samples as is
+train_split: 0.7
+val_split: 0.15
+test_split: 0.15
+
+# Other
+random_seed: 42
