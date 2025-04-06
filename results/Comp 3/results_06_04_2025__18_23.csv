@@ -1,0 +1,2 @@
+embedding_dim,mlp_layers,dropout,batch_size,num_epochs,learning_rate,final_train_loss,final_val_loss,recall@10,ndcg@10
+64,"[64, 32, 16, 8]",0.2,256,20,0.0005,0.1477780687928908,0.17433176390735752,0.017119220678575405,0.17362683988503377
